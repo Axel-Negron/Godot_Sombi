@@ -1,0 +1,153 @@
+[gd_scene load_steps=6 format=3 uid="uid://cj5v1qvcta01c"]
+
+[ext_resource type="PackedScene" uid="uid://ccctugrh8a8a4" path="res://Assets/Simple_zombie.glb" id="1_olude"]
+[ext_resource type="AnimationLibrary" uid="uid://dwka0podvhgpc" path="res://Assets/Anims/Locomotion-Library.res" id="2_ff2cn"]
+[ext_resource type="AnimationLibrary" uid="uid://tm3vpuvbe0rc" path="res://Assets/Anims/Melee-Library.res" id="3_gvtbc"]
+
+[sub_resource type="GDScript" id="GDScript_6on8i"]
+resource_name = "zombie_script"
+script/source = "extends CharacterBody3D
+@onready var animation_player = $AnimationPlayer
+@onready var armature_001 = $Armature_001
+
+
+
+const SPEED = 10.0
+const JUMP_VELOCITY = 10
+@onready var tp_camera_mount = $tp_camera_mount
+# Get the gravity from the project settings to be synced with RigidBody nodes.
+var gravity = ProjectSettings.get_setting(\"physics/3d/default_gravity\")
+var sensitivity = 0.1
+var captured = true
+var running_speed = 1.0
+var anim_lock = false
+
+
+func _unhandled_input(event):
+	if Input.is_action_just_pressed(\"Quit\"):
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+		captured = false
+		pass
+		
+func _input(event):
+	if event is InputEventMouseMotion and captured:
+		rotate_y(deg_to_rad(-event.relative.x *sensitivity))
+		armature_001.rotate_y(deg_to_rad(event.relative.x *sensitivity))
+		tp_camera_mount.rotate_x(deg_to_rad(-event.relative.y*sensitivity))
+	if event is InputEventMouseButton:
+			Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+			captured = true		
+		
+		
+func _physics_process(delta):
+	# Add the gravity.
+	if !animation_player.is_playing():
+		anim_lock = false
+	if not is_on_floor():
+		velocity.y -= gravity * delta
+		animation_player.play('Locomotion-Library/jump')
+		anim_lock = true
+
+	# Handle Ju mp.
+	if Input.is_action_just_pressed(\"jump\") :
+		anim_lock = true
+		animation_player.play('Locomotion-Library/jump-short')
+		velocity.y = JUMP_VELOCITY
+	if Input.is_action_pressed(\"Run\") and is_on_floor():
+		running_speed = 2
+	else:
+		running_speed = 1.0
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var input_dir = Input.get_vector(\"Left\", \"Right\", \"Forward\", \"Back\")
+	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+	if direction:
+		velocity.x = direction.x * SPEED *running_speed
+		velocity.z = direction.z * SPEED *running_speed
+		armature_001.rotation.y = lerp_angle(armature_001.rotation.y, atan2(-input_dir.x, -input_dir.y), .25) 
+		if(animation_player.current_animation !='walk' and running_speed==1.0):
+			if(!anim_lock):
+				animation_player.play('Locomotion-Library/walk')
+		else:
+			if(!anim_lock):
+				animation_player.play('Locomotion-Library/run')
+	else:
+		if(!anim_lock):
+			if(animation_player.current_animation !='Locomotion-Library/idle1'):
+				animation_player.play('Locomotion-Library/idle1')
+		velocity.x = move_toward(velocity.x, 0, SPEED) *running_speed
+		velocity.z = move_toward(velocity.z, 0, SPEED) *running_speed
+
+	move_and_slide()
+"
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qh4xg"]
+radius = 0.8
+height = 4.2
+
+[node name="Simple_zombie" instance=ExtResource("1_olude")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.00478, 0)
+script = SubResource("GDScript_6on8i")
+
+[node name="GeneralSkeleton" parent="Armature_001" index="0"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+bones/0/position = Vector3(0.0045482, 0.269151, -0.01726)
+bones/0/rotation = Quaternion(1.04308e-07, -1.86265e-09, 0.054734, 0.998501)
+bones/1/rotation = Quaternion(0.00016588, 0.00281522, -0.0587143, 0.998271)
+bones/2/rotation = Quaternion(1.16415e-05, -0.00282008, -0.00427881, 0.999987)
+bones/3/rotation = Quaternion(-5.02914e-08, 2.6921e-10, -0.00413265, 0.999991)
+bones/4/rotation = Quaternion(9.31323e-08, 1.04774e-09, 0.0123982, 0.999923)
+bones/5/rotation = Quaternion(0.0244766, -5.42837e-25, -5.43487e-18, 0.9997)
+bones/7/rotation = Quaternion(0.5, 0.5, 0.5, -0.5)
+bones/8/rotation = Quaternion(-0.102252, 0.790615, -0.587339, -0.139667)
+bones/8/scale = Vector3(1, 1, 1)
+bones/9/rotation = Quaternion(0.153425, -0.692769, 0.172901, 0.683108)
+bones/9/scale = Vector3(1.00068, 0.983749, 1.01621)
+bones/10/rotation = Quaternion(0.0329267, 0.682295, -0.000745928, 0.730335)
+bones/10/scale = Vector3(1, 1, 1)
+bones/11/rotation = Quaternion(0.5, -0.5, -0.5, -0.5)
+bones/12/rotation = Quaternion(-0.275255, 0.763885, -0.558091, 0.171025)
+bones/12/scale = Vector3(1, 1, 1)
+bones/13/rotation = Quaternion(0.135824, 0.696406, -0.153065, 0.687853)
+bones/13/scale = Vector3(1, 1, 1)
+bones/14/rotation = Quaternion(-0.082766, -0.397517, -0.025135, 0.913509)
+bones/14/scale = Vector3(1, 1, 1)
+bones/15/rotation = Quaternion(-0.031483, 0.203897, 0.976693, 0.0592016)
+bones/15/scale = Vector3(1.00602, 0.987779, 1.0063)
+bones/16/rotation = Quaternion(0.000333749, 0.986444, -0.164037, -0.00451473)
+bones/16/scale = Vector3(1.00091, 0.995939, 1.00328)
+bones/17/rotation = Quaternion(0.0334606, 0.706221, -0.706399, 0.0336759)
+bones/17/scale = Vector3(0.995431, 1.00084, 1.00398)
+bones/18/rotation = Quaternion(2.84224e-07, 0.965122, 0.261801, -1.38438e-07)
+bones/18/scale = Vector3(0.999821, 1.00014, 1.00004)
+bones/19/position = Vector3(0.0811778, 0.166388, 0.000133674)
+bones/20/rotation = Quaternion(-0.00731417, 0.00119588, 0.998024, 0.062389)
+bones/20/scale = Vector3(1.01137, 0.977211, 1.01186)
+bones/21/rotation = Quaternion(-0.000364585, 0.983801, -0.179196, 0.0049319)
+bones/21/scale = Vector3(1.00241, 0.986879, 1.01153)
+bones/22/rotation = Quaternion(0.00683195, 0.614156, -0.789154, -0.00116032)
+bones/22/scale = Vector3(0.988509, 1.00331, 1.009)
+bones/23/rotation = Quaternion(1.64636e-10, 1, 0, 1.64636e-10)
+bones/23/scale = Vector3(0.999789, 1.00017, 1.00004)
+bones/24/position = Vector3(-0.0811779, 0.168094, 0.000137593)
+
+[node name="Player_003" parent="Armature_001/GeneralSkeleton" index="0"]
+cast_shadow = 2
+
+[node name="AnimationPlayer" parent="." index="1"]
+playback_default_blend_time = 0.3
+libraries = {
+"Locomotion-Library": ExtResource("2_ff2cn"),
+"Melee-Library": ExtResource("3_gvtbc")
+}
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0185906, 0.686105, 0)
+shape = SubResource("CapsuleShape3D_qh4xg")
+
+[node name="tp_camera_mount" type="Node3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 0.995311, 0.0967317, 0, -0.0967317, 0.995311, 0, 3.41751, 4)
+
+[node name="Camera3D" type="Camera3D" parent="tp_camera_mount" index="0"]
+fov = 100.0

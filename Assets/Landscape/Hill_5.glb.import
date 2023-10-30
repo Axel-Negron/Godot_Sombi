@@ -1,0 +1,39 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://bs1xint2mivgf"
+path="res://.godot/imported/Hill_5.glb-cf5a1e1ae74ee213e088099952b2f747.scn"
+
+[deps]
+
+source_file="res://Assets/Landscape/Hill_5.glb"
+dest_files=["res://.godot/imported/Hill_5.glb-cf5a1e1ae74ee213e088099952b2f747.scn"]
+
+[params]
+
+nodes/root_type="Node3D"
+nodes/root_name="Scene Root"
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+meshes/ensure_tangents=false
+meshes/generate_lods=false
+meshes/create_shadow_meshes=false
+meshes/light_baking=0
+meshes/lightmap_texel_size=0.2
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+import_script/path=""
+_subresources={
+"nodes": {
+"PATH:Hill_52": {
+"generate/physics": true,
+"physics/shape_type": 2
+}
+}
+}
+gltf/embedded_image_handling=1
