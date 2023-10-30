@@ -124,7 +124,7 @@ shadow_enabled = true
 [node name="Landscape" type="Node3D" parent="."]
 
 [node name="Plane_3" type="Node3D" parent="Landscape"]
-transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, -14.9304, 10.6578, -28.011)
+transform = Transform3D(20, 0, 0, 0, 20, 0, 0, 0, 20, 13.9194, 3.56283, -59.1275)
 
 [node name="Plane_32" type="MeshInstance3D" parent="Landscape/Plane_3"]
 gi_lightmap_scale = 2
@@ -138,7 +138,7 @@ surface_material_override/0 = SubResource("StandardMaterial3D_nbm60")
 shape = SubResource("ConcavePolygonShape3D_hgu7j")
 
 [node name="Hill_3" type="Node3D" parent="Landscape"]
-transform = Transform3D(20, 0, 0, 0, 19.9949, 0.450605, 0, -0.450605, 19.9949, -12.2624, -30.7753, 4.75426)
+transform = Transform3D(20, 0, 0, 0, 19.9949, 0.450605, 0, -0.450605, 19.9949, -12.2624, -60.0578, -34.2725)
 
 [node name="Hill_32" type="MeshInstance3D" parent="Landscape/Hill_3"]
 gi_mode = 2
@@ -154,4 +154,4 @@ shape = SubResource("ConcavePolygonShape3D_jxuf3")
 [node name="Player" type="Node3D" parent="."]
 
 [node name="Simple_zombie" parent="Player" instance=ExtResource("1_n6aom")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91016, 10.1356, -84.6076)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.558244, 10.1356, -84.5808)
